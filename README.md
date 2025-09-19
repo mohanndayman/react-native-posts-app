@@ -29,3 +29,6 @@ src/
     ├── colors.js          # Color palette
     └── spacing.js         # Spacing, border radius,
 ```
+<img width="410" height="844" alt="image" src="https://github.com/user-attachments/assets/d3082bac-5c7a-43db-9588-875bfbe6eee4" />
+<img width="349" height="660" alt="image" src="https://github.com/user-attachments/assets/c3381043-5a11-4c07-a204-30bea2b3b986" />
+
