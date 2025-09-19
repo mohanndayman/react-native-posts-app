@@ -1,4 +1,4 @@
-const BASE_URL = "https://jsonplaceholder.typicode.com";
+import { BASE_URL } from "@env";
 
 class ApiClient {
   async request(endpoint, options = {}) {
