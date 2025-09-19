@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback } from "react";
+import { useState, useEffect, useCallback, useRef } from "react";
 import { postsApi } from "../api/posts";
 
 const usePosts = (initialPage = 1, limit = 10) => {
@@ -7,6 +7,7 @@ const usePosts = (initialPage = 1, limit = 10) => {
   const [error, setError] = useState(null);
   const [hasMore, setHasMore] = useState(true);
   const [page, setPage] = useState(initialPage);
+  const hasInitialized = useRef(false);
 
   const fetchPosts = useCallback(
     async (pageNum, append = false) => {
@@ -31,6 +32,7 @@ const usePosts = (initialPage = 1, limit = 10) => {
         setHasMore(newPosts.length === limit && newPosts.length > 0);
       } catch (err) {
         setError(err.message);
+        setHasMore(false);
       } finally {
         setLoading(false);
       }
@@ -39,12 +41,12 @@ const usePosts = (initialPage = 1, limit = 10) => {
   );
 
   const loadMore = useCallback(() => {
-    if (!loading && hasMore) {
+    if (!loading && hasMore && posts.length > 0) {
       const nextPage = page + 1;
       setPage(nextPage);
       fetchPosts(nextPage, true);
     }
-  }, [loading, hasMore, page, fetchPosts]);
+  }, [loading, hasMore, page, fetchPosts, posts.length]);
 
   const refresh = useCallback(() => {
     setPage(1);
@@ -55,12 +57,16 @@ const usePosts = (initialPage = 1, limit = 10) => {
 
   const retry = useCallback(() => {
     setError(null);
+    setHasMore(true);
     fetchPosts(page, page === 1);
   }, [page, fetchPosts]);
 
   useEffect(() => {
-    fetchPosts(page, false);
-  }, []);
+    if (!hasInitialized.current) {
+      hasInitialized.current = true;
+      fetchPosts(1, false);
+    }
+  }, [fetchPosts]);
 
   return {
     posts,
